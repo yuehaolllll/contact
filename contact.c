@@ -1,16 +1,78 @@
 #include "contact.h"
 
+/*
+//静态版本
 void contact_init(Contact* pc){
     pc->count = 0;
     memset(pc->data, 0, sizeof(pc->data));
 }
+*/
 
+//动态版本
+int contact_init(Contact* pc){
+    assert(pc);
+    pc->count = 0;
+    PeoInfo* ptr = (PeoInfo*)calloc(DEFAULT_SZ, sizeof(PeoInfo));
+    if(ptr == NULL){
+        printf("contact_init::%s\n", strerror(errno));
+        return 1;
+    }else{
+        pc->data = ptr;
+        pc->capacity = DEFAULT_SZ;
+    }
+    return 0;
+}
+
+/*
+//静态版本
 void Add(Contact* pc){
     assert(pc);
     if(pc->count == 100){
         printf("contact is full!\n");
         return;
     }
+
+    printf("Please input name:\n");
+    scanf("%s", pc->data[pc->count].name);
+
+    printf("Please input age:\n");
+    scanf("%d", &pc->data[pc->count].age);
+
+    printf("Please input gender:\n");
+    scanf("%s", pc->data[pc->count].gender);
+
+    printf("Please input telephone number:\n");
+    scanf("%s", pc->data[pc->count].tele);
+
+    printf("Please input address:\n");
+    scanf("%s", pc->data[pc->count].addr);
+
+    pc->count++;
+    printf("add success!\n");
+
+}
+*/
+
+int CheckCapacity(Contact* pc){
+    assert(pc);
+    if(pc->count == pc->capacity){
+        PeoInfo* ptr = (PeoInfo*)realloc(pc->data, sizeof(PeoInfo)*(pc->capacity+ICR_SZ));
+        if(ptr == NULL){
+            printf("CheckCapacity::%s\n", strerror(errno));
+            return 1;
+        }else{
+            pc->data = ptr;
+            pc->capacity += ICR_SZ;
+            printf("Increase capacity success!\n");
+        }
+    }
+    return 0;
+}
+
+//动态版本
+void Add(Contact* pc){
+    assert(pc);
+    CheckCapacity(pc);
 
     printf("Please input name:\n");
     scanf("%s", pc->data[pc->count].name);
@@ -139,5 +201,12 @@ void Sort(Contact* pc){
     qsort(pc->data, pc->count, sizeof(pc->data[0]), cmp_by_name);
     printf("Sort success!\n");
 
+}
+
+
+void Destroy(Contact* pc){
+    assert(pc);
+    free(pc->data);
+    pc->data = NULL;
 }
 
