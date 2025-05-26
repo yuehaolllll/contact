@@ -1496,6 +1496,7 @@ int main(){
 */
 
 
+/*
 //realloc函数的使用
 #include <errno.h>
 #include <stdlib.h>
@@ -1526,5 +1527,84 @@ int main(){
     return 0;
 
 }
+*/
+
+
+/*
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+void GetMemory(char** p){
+    *p = (char*)malloc(100);
+}
+int Test(){
+    char* str = NULL;
+    GetMemory(&str);
+    if(str == NULL){
+        printf("%s\n", strerror(errno));
+        return 1;
+    }
+
+    strcpy(str, "hello world");
+    printf("%s\n", str);
+
+    free(str);
+    str = NULL;
+    return 0;
+}
+int main(){
+    Test();
+    return 0;
+}
+*/
+
+
+/*
+//最大公约数与最小公倍数之和
+int main(){
+
+    int n = 0;
+    int m = 0;
+    while(scanf("%d %d", &n, &m) == 2){
+        int min = n > m ? n : m;
+        int max = n < m ? n : m;
+        int r = 0;
+        while(r = max % min){       // 寻找最大公约数
+            max = min;
+            min = r;
+        }
+
+        // 最小公倍数
+        int lcm = n*m / min;
+        printf("%d\n", min + lcm);
+
+    }
+    
+    return 0;
+
+}
+*/
+
+//打印空心正方形
+int main(){
+
+    int n = 0;
+    scanf("%d", &n);
+    int i = 0;
+    int j = 0;
+    for(i = 0; i < n; i++){
+        for(j = 0; j < n; j++){
+            if(i == 0 || i == n - 1 || j == 0 || j == n - 1){
+                printf("* ");
+            }else{
+                printf("  ");
+            }
+        }
+        printf("\n");
+    }
+    return 0;    
+
+}
+
 
 
