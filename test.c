@@ -36,6 +36,7 @@ int main(){
                 Sort(&con);
                 break;
             case 0:
+                SaveContact(&con);
                 Destroy(&con);
                 printf("EXIT\n");
                 break;

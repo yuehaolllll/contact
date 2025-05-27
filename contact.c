@@ -8,6 +8,48 @@ void contact_init(Contact* pc){
 }
 */
 
+int CheckCapacity(Contact* pc){
+    assert(pc);
+    if(pc->count == pc->capacity){
+        PeoInfo* ptr = (PeoInfo*)realloc(pc->data, sizeof(PeoInfo)*(pc->capacity+ICR_SZ));
+        if(ptr == NULL){
+            printf("CheckCapacity::%s\n", strerror(errno));
+            return 1;
+        }else{
+            pc->data = ptr;
+            pc->capacity += ICR_SZ;
+            printf("Increase capacity success!\n");
+        }
+    }
+    return 0;
+}
+
+
+void LoadContact(Contact* pc){
+
+    assert(pc);
+    FILE* pfRead = fopen("contact.txt", "r");
+    if(pfRead == NULL){
+        perror("LoadContact");
+        return;
+    }
+
+    //以二进制形式读
+    PeoInfo temp = {0};
+    while(fread(&temp, sizeof(PeoInfo), 1, pfRead) == 1){
+        CheckCapacity(pc);
+
+        pc->data[pc->count] = temp;
+        pc->count++;
+    }
+
+    //关闭文件
+    fclose(pfRead);
+    pfRead = NULL;
+
+}
+
+
 //动态版本
 int contact_init(Contact* pc){
     assert(pc);
@@ -20,6 +62,9 @@ int contact_init(Contact* pc){
         pc->data = ptr;
         pc->capacity = DEFAULT_SZ;
     }
+
+    LoadContact(pc);
+
     return 0;
 }
 
@@ -53,21 +98,7 @@ void Add(Contact* pc){
 }
 */
 
-int CheckCapacity(Contact* pc){
-    assert(pc);
-    if(pc->count == pc->capacity){
-        PeoInfo* ptr = (PeoInfo*)realloc(pc->data, sizeof(PeoInfo)*(pc->capacity+ICR_SZ));
-        if(ptr == NULL){
-            printf("CheckCapacity::%s\n", strerror(errno));
-            return 1;
-        }else{
-            pc->data = ptr;
-            pc->capacity += ICR_SZ;
-            printf("Increase capacity success!\n");
-        }
-    }
-    return 0;
-}
+
 
 //动态版本
 void Add(Contact* pc){
@@ -209,4 +240,25 @@ void Destroy(Contact* pc){
     free(pc->data);
     pc->data = NULL;
 }
+
+void SaveContact(const Contact* pc){
+    assert(pc);
+    FILE* pfWrite = fopen("contact.txt", "w");
+    if(pfWrite == NULL){
+        perror("SaveContact");
+        return;
+    }
+
+    //以二进制形式写
+    for(int i = 0; i < pc->count; i++){
+        fwrite(pc->data+i, sizeof(PeoInfo), 1, pfWrite);
+    }
+
+    //关闭文件
+    fclose(pfWrite);
+    pfWrite = NULL;
+
+}
+
+
 

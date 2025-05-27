@@ -46,5 +46,7 @@ void Search(Contact* pc);
 void Modify(Contact* pc);
 void Sort(Contact* pc);
 void Destroy(Contact* pc);
+void SaveContact(const Contact* pc);
+
 
 
